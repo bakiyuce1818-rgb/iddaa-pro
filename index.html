@@ -3,27 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
-<title>İddaa Pro Mobile</title>
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<title>İddaa Pro V2</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f3f4f6;color:#111827;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-header{background:#111827;color:white;padding:18px 16px;position:sticky;top:0;z-index:5}
-h1{font-size:20px;margin:0 0 4px}header small{opacity:.75}
-main{padding:12px;max-width:900px;margin:auto}.card{background:white;border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 2px 10px #00000010}
-label{font-size:12px;font-weight:700;display:block;margin:8px 0 4px}input,button,select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;background:white}
-button{background:#111827;color:white;border:0;font-weight:700;margin-top:8px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.three{grid-template-columns:repeat(3,1fr)}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.tabs button{margin:0;background:#e5e7eb;color:#111827}.tabs button.active{background:#111827;color:white}
-pre{white-space:pre-wrap;font-size:12px;line-height:1.5;margin:0}.result{border-top:1px solid #e5e7eb;padding:10px 0}.pick{font-size:18px;font-weight:800}.good{font-weight:800}.muted{color:#6b7280}.danger{color:#b91c1c}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:7px;border-bottom:1px solid #e5e7eb;text-align:left;white-space:nowrap}
-#status{font-size:13px;margin-top:8px}.hidden{display:none}
+*{box-sizing:border-box}body{margin:0;background:#eef2f7;color:#0f172a;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:#0f172a;color:#fff;padding:18px 14px;position:sticky;top:0;z-index:10}
+h1{font-size:21px;margin:0 0 3px}header small{opacity:.75}
+main{max-width:1000px;margin:auto;padding:10px}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.tabs button{margin:0;background:#dbe2ea;color:#0f172a}.tabs button.active{background:#0f172a;color:#fff}
+.card{background:#fff;border-radius:16px;padding:14px;margin:10px 0;box-shadow:0 2px 12px #0000000d}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.three{grid-template-columns:repeat(3,1fr)}
+label{font-size:12px;font-weight:750;display:block;margin:8px 0 4px}
+input,button,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;background:#fff}
+button{background:#0f172a;color:#fff;border:0;font-weight:750;margin-top:8px}.muted{color:#64748b;font-size:13px}.hidden{display:none}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}.kpi{padding:10px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc}.kpi b{display:block;font-size:17px}.kpi span{font-size:11px;color:#64748b}
+.pick{font-size:20px;font-weight:850}.grade{font-weight:900}.a{font-size:18px}.warn{color:#b45309}.good{color:#166534}.bad{color:#b91c1c}
+.tablewrap{overflow:auto;border:1px solid #e2e8f0;border-radius:12px}table{width:100%;border-collapse:collapse;font-size:12px;min-width:880px}
+th,td{padding:8px;border-bottom:1px solid #e2e8f0;text-align:left;white-space:nowrap}th{background:#f8fafc;position:sticky;top:0}
+.rowA{background:#f0fdf4}.rowB{background:#fffbeb}.rowC{background:#fff7ed}.rowN{background:#f8fafc}
+.badge{display:inline-block;padding:4px 7px;border-radius:999px;font-weight:800;font-size:11px}.bA{background:#dcfce7;color:#166534}.bB{background:#fef3c7;color:#92400e}.bC{background:#ffedd5;color:#9a3412}.bN{background:#e2e8f0;color:#475569}
+hr{border:0;border-top:1px solid #e2e8f0;margin:12px 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.small{font-size:12px}
+@media(max-width:650px){.kpis{grid-template-columns:1fr 1fr}.three{grid-template-columns:1fr 1fr 1fr} .grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-<header><h1>⚽ İddaa Pro Mobile</h1><small>Gol • KG • 1X2 • Korner • Value</small></header>
+<header><h1>⚽ İddaa Pro V2</h1><small>Olasılık • Değer • Güven • Gol • Korner</small></header>
 <main>
 <div class="tabs">
 <button id="t1" class="active" onclick="tab('analysis')">Maç Analizi</button>
 <button id="t2" onclick="tab('bulk')">Bülten</button>
-<button id="t3" onclick="tab('data')">Veri</button>
+<button id="t3" onclick="tab('data')">Ayarlar</button>
 </div>
 
 <section id="analysis" class="card">
@@ -33,114 +45,129 @@ pre{white-space:pre-wrap;font-size:12px;line-height:1.5;margin:0}.result{border-
 <div><label>Deplasman</label><input id="away" placeholder="Fenerbahçe"></div>
 </div>
 <div class="grid three">
-<div><label>MS1</label><input id="o1" type="number" step=".01" placeholder="1.80"></div>
-<div><label>X</label><input id="ox" type="number" step=".01" placeholder="3.50"></div>
-<div><label>MS2</label><input id="o2" type="number" step=".01" placeholder="4.20"></div>
+<div><label>MS1 oran</label><input id="o1" type="number" step=".01" placeholder="1.80"></div>
+<div><label>X oran</label><input id="ox" type="number" step=".01" placeholder="3.50"></div>
+<div><label>MS2 oran</label><input id="o2" type="number" step=".01" placeholder="4.20"></div>
 </div>
-<p class="muted">Aşağıdaki değerler, geçmiş veri setindeki takım performansına göre manuel girilebilir.</p>
 <div class="grid">
 <div><label>Ev gol ort.</label><input id="hg" type="number" step=".01" value="1.5"></div>
 <div><label>Dep gol ort.</label><input id="ag" type="number" step=".01" value="1.1"></div>
-<div><label>Ev korner</label><input id="hc" type="number" step=".1" value="5"></div>
-<div><label>Dep korner</label><input id="ac" type="number" step=".1" value="4"></div>
+<div><label>Ev korner ort.</label><input id="hc" type="number" step=".1" value="5"></div>
+<div><label>Dep korner ort.</label><input id="ac" type="number" step=".1" value="4"></div>
 </div>
 <button onclick="analyze()">ANALİZ ET</button>
 <div id="singleResult"></div>
 </section>
 
 <section id="bulk" class="card hidden">
-<h3>96+ Maç Bülten Tarama</h3>
-<p class="muted">CSV dosyası seç. Sütunlar: HomeTeam,AwayTeam,HomeGoals,AwayGoals,HomeCorners,AwayCorners,MS1,X,MS2</p>
+<h3>Bülten Tarama — 96+ maç</h3>
+<p class="muted">CSV yükle. Sistem her maça olasılık, adil oran, edge, güven seviyesi, gol ve korner projeksiyonu verir.</p>
 <input type="file" id="csv" accept=".csv">
+<div class="actions">
 <button onclick="scan()">BÜLTENİ TARA</button>
+<button onclick="downloadTemplate()">ŞABLON CSV</button>
+</div>
+<div class="grid">
+<div><label>Minimum güven</label><select id="minGrade"><option value="0">Hepsi</option><option value="3">C ve üstü</option><option value="2">B ve üstü</option><option value="1">A ve üstü</option></select></div>
+<div><label>Sıralama</label><select id="sortBy"><option value="score">Güven skoru</option><option value="edge">Edge</option><option value="over25">Üst 2.5</option><option value="corners">Korner</option></select></div>
+</div>
 <div id="bulkResult"></div>
 </section>
 
 <section id="data" class="card hidden">
-<h3>Veri / Sonuç</h3>
-<p>Bu mobil sürüm tarayıcı içinde çalışır. Verilerin sunucuya gönderilmesini gerektirmez.</p>
-<button onclick="downloadTemplate()">ÖRNEK CSV İNDİR</button>
-<button onclick="downloadResults()">SONUÇLARI CSV İNDİR</button>
-<div id="status"></div>
+<h3>Model Ayarları</h3>
+<p class="muted">Bu sürüm tarayıcıda çalışır. Takım ortalamalarını CSV ile sağlayabilirsin. Canlı İddaa verisi henüz otomatik bağlı değil; bunun için ayrıca veri sağlayıcı/API bağlantısı gerekir.</p>
+<div class="kpis">
+<div class="kpi"><b>Poisson</b><span>Gol dağılımı</span></div>
+<div class="kpi"><b>De-vig</b><span>Piyasa olasılığı</span></div>
+<div class="kpi"><b>Edge</b><span>Değer farkı</span></div>
+<div class="kpi"><b>Kor.</b><span>Korner projeksiyonu</span></div>
+</div>
+<hr>
+<div class="actions">
+<button onclick="downloadResults()">SONUÇ CSV</button>
+<button onclick="installApp()">ANA EKRANA EKLE</button>
+</div>
+<div id="status" class="muted"></div>
 </section>
 </main>
+
 <script>
 let results=[];
-
-function tab(x){
- ['analysis','bulk','data'].forEach((id,i)=>{
-   document.getElementById(id).classList.toggle('hidden',id!==x);
-   document.getElementById('t'+(i+1)).classList.toggle('active',id===x);
- });
-}
+const $=id=>document.getElementById(id);
+function tab(x){['analysis','bulk','data'].forEach((id,i)=>{$(id).classList.toggle('hidden',id!==x);$('t'+(i+1)).classList.toggle('active',id===x)})}
 function pct(x){return (100*x).toFixed(1)+'%'}
-function oddsProb(a){return 1/a}
-function devig(a,b,c){let s=1/a+1/b+1/c;return [1/a/s,1/b/s,1/c/s]}
-function poisson(k,l){return Math.exp(-l)*Math.pow(l,k)/factorial(k)}
 function factorial(n){let r=1;for(let i=2;i<=n;i++)r*=i;return r}
-function matrix(l,m){
- let z=[],sum=0;
- for(let i=0;i<=8;i++){z[i]=[];for(let j=0;j<=8;j++){z[i][j]=poisson(i,l)*poisson(j,m);sum+=z[i][j]}}
- for(let i=0;i<=8;i++)for(let j=0;j<=8;j++)z[i][j]/=sum;
- return z
-}
+function poisson(k,l){return Math.exp(-l)*Math.pow(l,k)/factorial(k)}
+function matrix(l,m){let z=[],sum=0;for(let i=0;i<=10;i++){z[i]=[];for(let j=0;j<=10;j++){z[i][j]=poisson(i,l)*poisson(j,m);sum+=z[i][j]}}for(let i=0;i<=10;i++)for(let j=0;j<=10;j++)z[i][j]/=sum;return z}
 function probs(l,m){
- let z=matrix(l,m),h=0,d=0,a=0,o15=0,o25=0,o35=0,btts=0;
- for(let i=0;i<=8;i++)for(let j=0;j<=8;j++){
-  if(i>j)h+=z[i][j]; else if(i===j)d+=z[i][j]; else a+=z[i][j];
-  if(i+j>1)o15+=z[i][j]; if(i+j>2)o25+=z[i][j]; if(i+j>3)o35+=z[i][j];
-  if(i>0&&j>0)btts+=z[i][j];
- }
+ const z=matrix(l,m);let h=0,d=0,a=0,o15=0,o25=0,o35=0,btts=0;
+ for(let i=0;i<=10;i++)for(let j=0;j<=10;j++){if(i>j)h+=z[i][j];else if(i===j)d+=z[i][j];else a+=z[i][j];if(i+j>1)o15+=z[i][j];if(i+j>2)o25+=z[i][j];if(i+j>3)o35+=z[i][j];if(i&&j)btts+=z[i][j]}
  return {h,d,a,o15,o25,o35,btts}
 }
+function devig(a,b,c){let s=1/a+1/b+1/c;return [1/a/s,1/b/s,1/c/s]}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+function score(p,market,odds){
+ let vals=[p.h,p.d,p.a], imax=Math.max(...vals), idx=vals.indexOf(imax);
+ let edge=(market&&odds[idx]>1)?imax*odds[idx]-1:null;
+ let certainty=imax;
+ let s=certainty*70;
+ if(edge!==null)s+=clamp(edge,0,.30)*100;
+ return {idx,edge,score:s}
+}
+function grade(s){return s>=65?'A':s>=52?'B':s>=40?'C':'N'}
+function pickName(i){return ['MS1','X','MS2'][i]}
 function analyze(){
- let l=+document.getElementById('hg').value,m=+document.getElementById('ag').value;
- let p=probs(l,m), ch=+document.getElementById('hc').value,ca=+document.getElementById('ac').value;
- let o=[+o1.value,+ox.value,+o2.value];
- let has=o.every(x=>x>1), market=has?devig(...o):null;
- let arr=[['MS1',p.h,o[0]],['X',p.d,o[1]],['MS2',p.a,o[2]]];
- let best=arr[0]; if(arr[1][1]>(best[1]))best=arr[1]; if(arr[2][1]>(best[1]))best=arr[2];
- let html=`<div class="result"><div class="pick">En güçlü: ${best[0]} — ${pct(best[1])}</div>
- <b>1X2:</b> ${pct(p.h)} / ${pct(p.d)} / ${pct(p.a)}<br>
- <b>Üst 1.5:</b> ${pct(p.o15)} &nbsp; <b>Üst 2.5:</b> ${pct(p.o25)} &nbsp; <b>Üst 3.5:</b> ${pct(p.o35)}<br>
- <b>KG Var:</b> ${pct(p.btts)}<br><b>Beklenen gol:</b> ${(l+m).toFixed(2)}<br>
- <b>Beklenen korner:</b> ${(ch+ca).toFixed(1)} (${ch.toFixed(1)}-${ca.toFixed(1)})`;
- if(has){
-  html+=`<hr><b>Piyasa de-vig:</b> ${pct(market[0])} / ${pct(market[1])} / ${pct(market[2])}<br>
-  <b>Edge:</b> ${(p.h*o[0]-1).toFixed(2)} / ${(p.d*o[1]-1).toFixed(2)} / ${(p.a*o[2]-1).toFixed(2)}`;
- }
- html+='</div>';document.getElementById('singleResult').innerHTML=html;
+ let l=+$('hg').value,m=+$('ag').value,ch=+$('hc').value,ca=+$('ac').value;
+ if(!(l>0&&m>0))return alert('Gol ortalamalarını gir.');
+ let p=probs(l,m),o=[+$('o1').value,+$('ox').value,+$('o2').value],has=o.every(x=>x>1),market=has?devig(...o):null;
+ let sc=score(p,market,o),g=grade(sc.score),pick=pickName(sc.idx),fair=1/p[['h','d','a'][sc.idx]];
+ let html=`<div class="result"><hr><div class="pick">${$('home').value||'Ev'} - ${$('away').value||'Dep'}</div>
+ <div class="grade">Güven: ${g} <span class="muted">(${sc.score.toFixed(0)}/100)</span></div>
+ <div class="kpis">
+ <div class="kpi"><b>${pick}</b><span>${pct([p.h,p.d,p.a][sc.idx])}</span></div>
+ <div class="kpi"><b>${fair.toFixed(2)}</b><span>Adil oran</span></div>
+ <div class="kpi"><b>${(l+m).toFixed(2)}</b><span>Bek. gol</span></div>
+ <div class="kpi"><b>${(ch+ca).toFixed(1)}</b><span>Bek. korner</span></div></div>
+ <hr><b>1X2:</b> ${pct(p.h)} / ${pct(p.d)} / ${pct(p.a)}<br>
+ <b>Üst 1.5:</b> ${pct(p.o15)} · <b>Üst 2.5:</b> ${pct(p.o25)} · <b>Üst 3.5:</b> ${pct(p.o35)}<br>
+ <b>KG Var:</b> ${pct(p.btts)} · <b>KG Yok:</b> ${pct(1-p.btts)}<br>
+ <b>Korner:</b> ${ch.toFixed(1)} + ${ca.toFixed(1)} = ${(ch+ca).toFixed(1)}`;
+ if(has){let edges=o.map((x,i)=>[p.h,p.d,p.a][i]*x-1);html+=`<hr><b>Piyasa de-vig:</b> ${pct(market[0])} / ${pct(market[1])} / ${pct(market[2])}<br><b>Edge:</b> ${edges.map(x=>(x*100).toFixed(1)+'%').join(' / ')}`}
+ html+='</div>';$('singleResult').innerHTML=html
 }
 function parseCSV(s){
- let lines=s.trim().split(/\r?\n/), h=lines.shift().split(',').map(x=>x.trim());
- return lines.map(line=>{let v=line.split(',');let o={};h.forEach((k,i)=>o[k]=(v[i]||'').trim());return o});
+ let lines=s.trim().split(/\r?\n/).filter(Boolean),h=lines.shift().split(',').map(x=>x.trim());
+ return lines.map(line=>{let v=line.split(',');let o={};h.forEach((k,i)=>o[k]=(v[i]??'').trim());return o})
 }
+function val(r,names,def){for(const n of names){if(r[n]!==undefined&&r[n]!==''){let x=+r[n];if(Number.isFinite(x))return x}}return def}
 async function scan(){
- let f=document.getElementById('csv').files[0];if(!f)return alert('CSV seç.');
+ let f=$('csv').files[0];if(!f)return alert('CSV seç.');
  let rows=parseCSV(await f.text());results=[];
  for(let r of rows){
-  let l=+(r.HomeGoals||r.Home_xG||1.5),m=+(r.AwayGoals||r.Away_xG||1.1);
-  if(r.Home_xG)l=+r.Home_xG;if(r.Away_xG)m=+r.Away_xG;
-  let p=probs(l,m), pick=p.h>=p.d&&p.h>=p.a?'MS1':p.d>=p.a?'X':'MS2';
-  results.push({HomeTeam:r.HomeTeam,AwayTeam:r.AwayTeam,MS1:p.h,X:p.d,MS2:p.a,Over25:p.o25,BTTS:p.btts,ExpGoals:l+m,ExpCorners:(+(r.HomeCorners||4))+(+(r.AwayCorners||4)),Pick:pick});
+  let l=val(r,['Home_xG','HomeGoals','HomeGoalAvg'],1.5),m=val(r,['Away_xG','AwayGoals','AwayGoalAvg'],1.1);
+  let hc=val(r,['HomeCorners','HomeCornerAvg'],4.5),ac=val(r,['AwayCorners','AwayCornerAvg'],4);
+  let p=probs(l,m),o=[+r.MS1,+r.X,+r.MS2],has=o.every(x=>x>1),market=has?devig(...o):null,sc=score(p,market,o),g=grade(sc.score);
+  results.push({HomeTeam:r.HomeTeam||'Ev',AwayTeam:r.AwayTeam||'Dep',MS1:p.h,X:p.d,MS2:p.a,Over25:p.o25,BTTS:p.btts,ExpGoals:l+m,ExpCorners:hc+ac,Pick:pickName(sc.idx),FairOdds:1/[p.h,p.d,p.a][sc.idx],Edge:sc.edge??'',Score:sc.score,Grade:g})
  }
- results.sort((a,b)=>b[a.Pick]-a[a.Pick]);
- renderResults();
+ renderResults()
 }
 function renderResults(){
- let h='<div class="tablewrap"><table><tr><th>#</th><th>Maç</th><th>MS1</th><th>X</th><th>MS2</th><th>Ü2.5</th><th>KG</th><th>Korner</th><th>Seçim</th></tr>';
- results.forEach((r,i)=>h+=`<tr><td>${i+1}</td><td>${r.HomeTeam} - ${r.AwayTeam}</td><td>${pct(r.MS1)}</td><td>${pct(r.X)}</td><td>${pct(r.MS2)}</td><td>${pct(r.Over25)}</td><td>${pct(r.BTTS)}</td><td>${r.ExpCorners.toFixed(1)}</td><td><b>${r.Pick}</b></td></tr>`);
- document.getElementById('bulkResult').innerHTML=h+'</table></div>';
+ let min=+$('minGrade').value,order={A:1,B:2,C:3,N:4};
+ let arr=results.filter(r=>!min||order[r.Grade]<=min);
+ let s=$('sortBy').value;
+ arr.sort((a,b)=>s==='edge'?((+b.Edge||-9)-(+a.Edge||-9)):s==='over25'?b.Over25-a.Over25:s==='corners'?b.ExpCorners-a.ExpCorners:b.Score-a.Score);
+ let h=`<p class="small"><b>${arr.length}</b> maç gösteriliyor. A = en güçlü, N = pas.</p><div class="tablewrap"><table><tr><th>#</th><th>Maç</th><th>Güven</th><th>Seçim</th><th>Olasılık</th><th>Adil</th><th>Edge</th><th>Ü2.5</th><th>KG</th><th>Gol</th><th>Korner</th></tr>`;
+ arr.forEach((r,i)=>{let prob=r.Pick==='MS1'?r.MS1:r.Pick==='X'?r.X:r.MS2;let cls='row'+r.Grade;let bc=r.Grade==='A'?'bA':r.Grade==='B'?'bB':r.Grade==='C'?'bC':'bN';h+=`<tr class="${cls}"><td>${i+1}</td><td>${r.HomeTeam} - ${r.AwayTeam}</td><td><span class="badge ${bc}">${r.Grade} ${r.Score.toFixed(0)}</span></td><td><b>${r.Pick}</b></td><td>${pct(prob)}</td><td>${r.FairOdds.toFixed(2)}</td><td>${r.Edge===''?'—':(100*r.Edge).toFixed(1)+'%'}</td><td>${pct(r.Over25)}</td><td>${pct(r.BTTS)}</td><td>${r.ExpGoals.toFixed(2)}</td><td>${r.ExpCorners.toFixed(1)}</td></tr>`});
+ $('bulkResult').innerHTML=h+'</table></div>'
 }
-function downloadText(name,text){
- let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv;charset=utf-8'}));a.download=name;a.click();
-}
-function downloadTemplate(){
- downloadText('iddaa_ornek_bulten.csv','HomeTeam,AwayTeam,HomeGoals,AwayGoals,HomeCorners,AwayCorners,MS1,X,MS2\nTakim A,Takim B,1.5,1.1,5,4,1.80,3.50,4.20\n');
-}
-function downloadResults(){
- if(!results.length)return alert('Önce bülten tara.');
- let keys=Object.keys(results[0]);downloadText('iddaa_sonuclar.csv',keys.join(',')+'\n'+results.map(r=>keys.map(k=>r[k]).join(',')).join('\n'));
-}
+$('minGrade').addEventListener('change',()=>results.length&&renderResults());$('sortBy').addEventListener('change',()=>results.length&&renderResults());
+function downloadText(name,text){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv;charset=utf-8'}));a.download=name;a.click()}
+function downloadTemplate(){downloadText('iddaa_bulten_sablon.csv','HomeTeam,AwayTeam,Home_xG,Away_xG,HomeCorners,AwayCorners,MS1,X,MS2\nTakim A,Takim B,1.60,1.10,5.2,4.1,1.80,3.50,4.20\n')}
+function downloadResults(){if(!results.length)return alert('Önce bülteni tara.');let keys=Object.keys(results[0]);downloadText('iddaa_pro_v2_sonuclar.csv',keys.join(',')+'\n'+results.map(r=>keys.map(k=>r[k]).join(',')).join('\n'))}
+let deferredPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e});
+async function installApp(){if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null}else alert('Chrome menüsünden “Ana ekrana ekle” seçeneğini kullanabilirsin.')}
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>
-</body></html>
+</body>
+</html>

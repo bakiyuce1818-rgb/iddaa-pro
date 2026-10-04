@@ -1,0 +1,12 @@
+{
+  "name": "İddaa Pro V2",
+  "short_name": "İddaa Pro",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#eef2f7",
+  "theme_color": "#0f172a",
+  "description": "Futbol maç olasılık, değer, güven ve korner analiz uygulaması.",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
