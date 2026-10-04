@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
-<title>İddaa Pro V2</title>
+<title>İddaa Pro V3</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#eef2f7;color:#0f172a;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 header{background:#0f172a;color:#fff;padding:18px 14px;position:sticky;top:0;z-index:10}
@@ -30,7 +30,7 @@ hr{border:0;border-top:1px solid #e2e8f0;margin:12px 0}.actions{display:grid;gri
 </style>
 </head>
 <body>
-<header><h1>⚽ İddaa Pro V2</h1><small>Olasılık • Değer • Güven • Gol • Korner</small></header>
+<header><h1>⚽ İddaa Pro V3</h1><small>Olasılık • Değer • Güven • Gol • Korner • Form</small></header>
 <main>
 <div class="tabs">
 <button id="t1" class="active" onclick="tab('analysis')">Maç Analizi</button>
@@ -61,14 +61,15 @@ hr{border:0;border-top:1px solid #e2e8f0;margin:12px 0}.actions{display:grid;gri
 
 <section id="bulk" class="card hidden">
 <h3>Bülten Tarama — 96+ maç</h3>
-<p class="muted">CSV yükle. Sistem her maça olasılık, adil oran, edge, güven seviyesi, gol ve korner projeksiyonu verir.</p>
+<p class="muted">CSV yükle. Sistem her maça olasılık, adil oran, edge, form farkı, gol, korner ve A+/A/B/C/N güven seviyesi verir.</p>
+<p class="muted"><b>Önerilen CSV alanları:</b> HomeTeam,AwayTeam,Home_xG,Away_xG,HomeGoals,AwayGoals,HomeCorners,AwayCorners,HomeForm,AwayForm,MS1,X,MS2</p>
 <input type="file" id="csv" accept=".csv">
 <div class="actions">
 <button onclick="scan()">BÜLTENİ TARA</button>
 <button onclick="downloadTemplate()">ŞABLON CSV</button>
 </div>
 <div class="grid">
-<div><label>Minimum güven</label><select id="minGrade"><option value="0">Hepsi</option><option value="3">C ve üstü</option><option value="2">B ve üstü</option><option value="1">A ve üstü</option></select></div>
+<div><label>Minimum güven</label><select id="minGrade"><option value="0">Hepsi</option><option value="4">C ve üstü</option><option value="3">B ve üstü</option><option value="2">A ve üstü</option><option value="1">A+ ve üstü</option></select></div>
 <div><label>Sıralama</label><select id="sortBy"><option value="score">Güven skoru</option><option value="edge">Edge</option><option value="over25">Üst 2.5</option><option value="corners">Korner</option></select></div>
 </div>
 <div id="bulkResult"></div>
@@ -107,21 +108,31 @@ function probs(l,m){
 }
 function devig(a,b,c){let s=1/a+1/b+1/c;return [1/a/s,1/b/s,1/c/s]}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
-function score(p,market,odds){
+function score(p,market,odds,formDiff=0){
  let vals=[p.h,p.d,p.a], imax=Math.max(...vals), idx=vals.indexOf(imax);
  let edge=(market&&odds[idx]>1)?imax*odds[idx]-1:null;
- let certainty=imax;
- let s=certainty*70;
- if(edge!==null)s+=clamp(edge,0,.30)*100;
- return {idx,edge,score:s}
+ let marketAgreement=market ? Math.max(0, 1-Math.abs(imax-market[idx])) : .35;
+ let formSignal=clamp(Math.abs(formDiff)/10,0,1);
+ let base=imax*45;
+ let edgePts=edge===null?0:clamp(edge,-.15,.30)*70;
+ let agreement=market?marketAgreement*20:7;
+ let form=formSignal*15;
+ let s=clamp(base+edgePts+agreement+form,0,100);
+ return {idx,edge,score:s,formDiff,marketAgreement}
 }
-function grade(s){return s>=65?'A':s>=52?'B':s>=40?'C':'N'}
+function grade(s){
+ if(s>=78)return 'A+';
+ if(s>=66)return 'A';
+ if(s>=54)return 'B';
+ if(s>=42)return 'C';
+ return 'N'
+}
 function pickName(i){return ['MS1','X','MS2'][i]}
 function analyze(){
  let l=+$('hg').value,m=+$('ag').value,ch=+$('hc').value,ca=+$('ac').value;
  if(!(l>0&&m>0))return alert('Gol ortalamalarını gir.');
  let p=probs(l,m),o=[+$('o1').value,+$('ox').value,+$('o2').value],has=o.every(x=>x>1),market=has?devig(...o):null;
- let sc=score(p,market,o),g=grade(sc.score),pick=pickName(sc.idx),fair=1/p[['h','d','a'][sc.idx]];
+ let sc=score(p,market,o,0),g=grade(sc.score),pick=pickName(sc.idx),fair=1/p[['h','d','a'][sc.idx]];
  let html=`<div class="result"><hr><div class="pick">${$('home').value||'Ev'} - ${$('away').value||'Dep'}</div>
  <div class="grade">Güven: ${g} <span class="muted">(${sc.score.toFixed(0)}/100)</span></div>
  <div class="kpis">
@@ -147,23 +158,25 @@ async function scan(){
  for(let r of rows){
   let l=val(r,['Home_xG','HomeGoals','HomeGoalAvg'],1.5),m=val(r,['Away_xG','AwayGoals','AwayGoalAvg'],1.1);
   let hc=val(r,['HomeCorners','HomeCornerAvg'],4.5),ac=val(r,['AwayCorners','AwayCornerAvg'],4);
-  let p=probs(l,m),o=[+r.MS1,+r.X,+r.MS2],has=o.every(x=>x>1),market=has?devig(...o):null,sc=score(p,market,o),g=grade(sc.score);
-  results.push({HomeTeam:r.HomeTeam||'Ev',AwayTeam:r.AwayTeam||'Dep',MS1:p.h,X:p.d,MS2:p.a,Over25:p.o25,BTTS:p.btts,ExpGoals:l+m,ExpCorners:hc+ac,Pick:pickName(sc.idx),FairOdds:1/[p.h,p.d,p.a][sc.idx],Edge:sc.edge??'',Score:sc.score,Grade:g})
+  let p=probs(l,m),o=[+r.MS1,+r.X,+r.MS2],has=o.every(x=>x>1),market=has?devig(...o):null;
+  let hf=val(r,['HomeForm','HomeFormPoints','HomeRecent'],5), af=val(r,['AwayForm','AwayFormPoints','AwayRecent'],5);
+  let sc=score(p,market,o,hf-af),g=grade(sc.score);
+  results.push({HomeTeam:r.HomeTeam||'Ev',AwayTeam:r.AwayTeam||'Dep',MS1:p.h,X:p.d,MS2:p.a,Over25:p.o25,BTTS:p.btts,ExpGoals:l+m,ExpCorners:hc+ac,Pick:pickName(sc.idx),FairOdds:1/[p.h,p.d,p.a][sc.idx],Edge:sc.edge??'',FormDiff:hf-af,Score:sc.score,Grade:g})
  }
  renderResults()
 }
 function renderResults(){
- let min=+$('minGrade').value,order={A:1,B:2,C:3,N:4};
+ let min=+$('minGrade').value,order={'A+':1,A:2,B:3,C:4,N:5};
  let arr=results.filter(r=>!min||order[r.Grade]<=min);
  let s=$('sortBy').value;
  arr.sort((a,b)=>s==='edge'?((+b.Edge||-9)-(+a.Edge||-9)):s==='over25'?b.Over25-a.Over25:s==='corners'?b.ExpCorners-a.ExpCorners:b.Score-a.Score);
- let h=`<p class="small"><b>${arr.length}</b> maç gösteriliyor. A = en güçlü, N = pas.</p><div class="tablewrap"><table><tr><th>#</th><th>Maç</th><th>Güven</th><th>Seçim</th><th>Olasılık</th><th>Adil</th><th>Edge</th><th>Ü2.5</th><th>KG</th><th>Gol</th><th>Korner</th></tr>`;
- arr.forEach((r,i)=>{let prob=r.Pick==='MS1'?r.MS1:r.Pick==='X'?r.X:r.MS2;let cls='row'+r.Grade;let bc=r.Grade==='A'?'bA':r.Grade==='B'?'bB':r.Grade==='C'?'bC':'bN';h+=`<tr class="${cls}"><td>${i+1}</td><td>${r.HomeTeam} - ${r.AwayTeam}</td><td><span class="badge ${bc}">${r.Grade} ${r.Score.toFixed(0)}</span></td><td><b>${r.Pick}</b></td><td>${pct(prob)}</td><td>${r.FairOdds.toFixed(2)}</td><td>${r.Edge===''?'—':(100*r.Edge).toFixed(1)+'%'}</td><td>${pct(r.Over25)}</td><td>${pct(r.BTTS)}</td><td>${r.ExpGoals.toFixed(2)}</td><td>${r.ExpCorners.toFixed(1)}</td></tr>`});
+ let h=`<p class="small"><b>${arr.length}</b> maç gösteriliyor. A = en güçlü, N = pas.</p><div class="tablewrap"><table><tr><th>#</th><th>Maç</th><th>Güven</th><th>Seçim</th><th>Olasılık</th><th>Adil</th><th>Edge</th><th>Form farkı</th><th>Ü2.5</th><th>KG</th><th>Gol</th><th>Korner</th></tr>`;
+ arr.forEach((r,i)=>{let prob=r.Pick==='MS1'?r.MS1:r.Pick==='X'?r.X:r.MS2;let cls='row'+r.Grade;let bc=r.Grade==='A+'||r.Grade==='A'?'bA':r.Grade==='B'?'bB':r.Grade==='C'?'bC':'bN';h+=`<tr class="${cls}"><td>${i+1}</td><td>${r.HomeTeam} - ${r.AwayTeam}</td><td><span class="badge ${bc}">${r.Grade} ${r.Score.toFixed(0)}</span></td><td><b>${r.Pick}</b></td><td>${pct(prob)}</td><td>${r.FairOdds.toFixed(2)}</td><td>${r.Edge===''?'—':(100*r.Edge).toFixed(1)+'%'}</td><td>${r.FormDiff>0?'+':''}${r.FormDiff.toFixed(1)}</td><td>${pct(r.Over25)}</td><td>${pct(r.BTTS)}</td><td>${r.ExpGoals.toFixed(2)}</td><td>${r.ExpCorners.toFixed(1)}</td></tr>`});
  $('bulkResult').innerHTML=h+'</table></div>'
 }
 $('minGrade').addEventListener('change',()=>results.length&&renderResults());$('sortBy').addEventListener('change',()=>results.length&&renderResults());
 function downloadText(name,text){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv;charset=utf-8'}));a.download=name;a.click()}
-function downloadTemplate(){downloadText('iddaa_bulten_sablon.csv','HomeTeam,AwayTeam,Home_xG,Away_xG,HomeCorners,AwayCorners,MS1,X,MS2\nTakim A,Takim B,1.60,1.10,5.2,4.1,1.80,3.50,4.20\n')}
+function downloadTemplate(){downloadText('iddaa_bulten_sablon.csv','HomeTeam,AwayTeam,Home_xG,Away_xG,HomeGoals,AwayGoals,HomeCorners,AwayCorners,HomeForm,AwayForm,MS1,X,MS2\nTakim A,Takim B,1.60,1.10,1.7,1.0,5.2,4.1,8,5,1.80,3.50,4.20\n')}
 function downloadResults(){if(!results.length)return alert('Önce bülteni tara.');let keys=Object.keys(results[0]);downloadText('iddaa_pro_v2_sonuclar.csv',keys.join(',')+'\n'+results.map(r=>keys.map(k=>r[k]).join(',')).join('\n'))}
 let deferredPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e});
 async function installApp(){if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null}else alert('Chrome menüsünden “Ana ekrana ekle” seçeneğini kullanabilirsin.')}
